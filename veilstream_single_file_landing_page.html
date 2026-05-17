@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A self-contained marketing landing page for VeilStream: hosted preview environments with safe, production-like Postgres seed data." />
+  <title>VeilStream | Safer Preview Environments for Postgres Apps</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-2: #0b1728;
+      --panel: rgba(255,255,255,.075);
+      --panel-strong: rgba(255,255,255,.12);
+      --text: #eef6ff;
+      --muted: #a9bdd4;
+      --muted-2: #7890aa;
+      --line: rgba(255,255,255,.14);
+      --brand: #54e0ff;
+      --brand-2: #8b5cf6;
+      --brand-3: #34d399;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+      --shadow: 0 30px 90px rgba(0,0,0,.35);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1180px;
+      --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(84,224,255,.22), transparent 32rem),
+        radial-gradient(circle at top right, rgba(139,92,246,.22), transparent 34rem),
+        linear-gradient(180deg, var(--bg), #08101c 42%, #050912 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, svg { max-width: 100%; display: block; }
+    button, input { font: inherit; }
+
+    .shell { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 12px;
+      background: #fff;
+      color: #06101f;
+      padding: 10px 14px;
+      border-radius: 10px;
+      z-index: 999;
+    }
+    .skip-link:focus { left: 12px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(7,17,31,.76);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      font-size: 1.18rem;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(84,224,255,.95), rgba(139,92,246,.95));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 14px 40px rgba(84,224,255,.2);
+    }
+
+    .mark svg { width: 24px; height: 24px; }
+
+    nav ul {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    nav a {
+      display: inline-flex;
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: .92rem;
+    }
+    nav a:hover, nav a:focus-visible { color: var(--text); background: rgba(255,255,255,.08); outline: none; }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .menu-button { display: none; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 12px 18px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      color: #03101b;
+      background: linear-gradient(135deg, #65e7ff, #8bffcf);
+      box-shadow: 0 16px 40px rgba(84,224,255,.22);
+    }
+    .btn-secondary {
+      color: var(--text);
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.07);
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.1); }
+
+    main { position: relative; }
+
+    .hero {
+      padding: 92px 0 64px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .86fr);
+      align-items: center;
+      gap: 46px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border: 1px solid rgba(84,224,255,.24);
+      border-radius: 999px;
+      background: rgba(84,224,255,.08);
+      color: #c9f7ff;
+      font-weight: 800;
+      font-size: .82rem;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--brand-3);
+      box-shadow: 0 0 0 7px rgba(52,211,153,.16);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin: 20px 0 18px;
+      max-width: 790px;
+      font-size: clamp(3rem, 8vw, 6.2rem);
+      line-height: .92;
+      letter-spacing: -.08em;
+    }
+    .hero p.lede {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 1.8vw, 1.34rem);
+      line-height: 1.55;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .hero-trust {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 32px;
+      max-width: 760px;
+    }
+    .trust-item {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,.055);
+    }
+    .trust-item strong { display: block; font-size: 1.02rem; letter-spacing: -.02em; }
+    .trust-item span { display: block; margin-top: 4px; color: var(--muted-2); font-size: .88rem; line-height: 1.35; }
+
+    .hero-visual {
+      position: relative;
+      min-height: 560px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 34px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.045)),
+        radial-gradient(circle at 20% 15%, rgba(84,224,255,.19), transparent 16rem),
+        radial-gradient(circle at 80% 88%, rgba(139,92,246,.22), transparent 18rem);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, black, transparent 86%);
+      opacity: .5;
+    }
+    .diagram {
+      position: absolute;
+      inset: 24px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+    }
+    .browser {
+      position: relative;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 22px;
+      background: rgba(4,11,22,.74);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.35);
+    }
+    .browser-top {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,.11);
+      background: rgba(255,255,255,.06);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.34); }
+    .urlbar {
+      margin-left: 8px;
+      flex: 1;
+      min-width: 0;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .77rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .browser-body { padding: 18px; }
+    .pipeline {
+      display: grid;
+      gap: 12px;
+    }
+    .pipe-card {
+      position: relative;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 17px;
+      background: rgba(255,255,255,.06);
+    }
+    .pipe-card h3 { margin: 0 0 4px; font-size: .95rem; letter-spacing: -.02em; }
+    .pipe-card p { margin: 0; color: var(--muted-2); font-size: .82rem; line-height: 1.36; }
+    .pipe-card.clean { border-color: rgba(52,211,153,.28); background: rgba(52,211,153,.08); }
+    .status-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 750;
+    }
+    .mini-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-3); }
+
+    .floating-card {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: min(310px, calc(100% - 32px));
+      border: 1px solid rgba(84,224,255,.18);
+      border-radius: 22px;
+      padding: 16px;
+      background: rgba(6,16,29,.86);
+      box-shadow: 0 24px 70px rgba(0,0,0,.36);
+      backdrop-filter: blur(16px);
+    }
+    .floating-card .label { color: #c9f7ff; font-size: .78rem; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+    .floating-card .metric { margin-top: 8px; font-size: 2.2rem; font-weight: 900; letter-spacing: -.06em; }
+    .floating-card p { margin: 4px 0 0; color: var(--muted); line-height: 1.35; }
+
+    .section { padding: 78px 0; }
+    .section-head { max-width: 760px; margin-bottom: 34px; }
+    .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .kicker { color: var(--brand); font-weight: 900; text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; margin-bottom: 10px; }
+    h2 {
+      margin-bottom: 14px;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 1;
+      letter-spacing: -.065em;
+    }
+    .section-head p { color: var(--muted); font-size: 1.08rem; line-height: 1.6; }
+
+    .problem-solution {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .panel {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 20px 70px rgba(0,0,0,.18);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 22px 22px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      flex: 0 0 auto;
+    }
+    .icon-wrap svg { width: 24px; height: 24px; }
+    .panel h3 { margin: 0; font-size: 1.2rem; letter-spacing: -.03em; }
+    .list { display: grid; gap: 12px; padding: 22px; margin: 0; list-style: none; }
+    .list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .badge-x, .badge-check {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: .78rem;
+    }
+    .badge-x { color: #ffdbe2; background: rgba(251,113,133,.14); }
+    .badge-check { color: #c9ffeb; background: rgba(52,211,153,.14); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      position: relative;
+      padding: 22px;
+      min-height: 230px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.045));
+      overflow: hidden;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30% -45% 15%;
+      height: 180px;
+      background: radial-gradient(circle, rgba(84,224,255,.18), transparent 68%);
+      pointer-events: none;
+    }
+    .card .num { color: var(--brand); font-weight: 900; letter-spacing: -.02em; margin-bottom: 36px; }
+    .card h3 { font-size: 1.23rem; letter-spacing: -.035em; margin-bottom: 10px; }
+    .card p { color: var(--muted); line-height: 1.52; margin-bottom: 0; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: 1fr .86fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .steps {
+      display: grid;
+      gap: 14px;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 15px;
+      align-items: start;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: rgba(255,255,255,.055);
+    }
+    .step-number {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(84,224,255,.2), rgba(139,92,246,.19));
+      color: #d9fbff;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .step h3 { margin: 0 0 5px; font-size: 1.06rem; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.48; }
+
+    .code-panel {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background: #050a13;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .code-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: .86rem;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    pre {
+      margin: 0;
+      padding-top: 18px;
+      overflow: auto;
+      color: #dff8ff;
+      font-size: .91rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .token-comment { color: #7b94ad; }
+    .token-green { color: #8bffcf; }
+    .token-blue { color: #79e9ff; }
+    .token-purple { color: #c4a8ff; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .mini-feature {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: rgba(255,255,255,.055);
+    }
+    .mini-feature h3 { font-size: 1rem; margin-bottom: 8px; letter-spacing: -.02em; }
+    .mini-feature p { color: var(--muted); margin-bottom: 0; font-size: .93rem; line-height: 1.45; }
+
+    .security {
+      display: grid;
+      grid-template-columns: .85fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .shield {
+      min-height: 440px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(52,211,153,.18), transparent 18rem),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .security-copy { display: grid; gap: 12px; }
+    .security-copy .callout {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      background: rgba(255,255,255,.055);
+    }
+    .callout strong { display: block; margin-bottom: 6px; letter-spacing: -.02em; }
+    .callout span { color: var(--muted); line-height: 1.45; }
+
+    .calculator {
+      display: grid;
+      grid-template-columns: .9fr 1fr;
+      gap: 18px;
+      padding: 24px;
+      border: 1px solid rgba(84,224,255,.16);
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at top right, rgba(84,224,255,.14), transparent 18rem),
+        rgba(255,255,255,.055);
+      box-shadow: var(--shadow);
+    }
+    .calc-controls { display: grid; gap: 16px; }
+    .control {
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      background: rgba(0,0,0,.13);
+    }
+    .control label { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-weight: 750; }
+    .control output { color: var(--text); font-weight: 900; }
+    input[type="range"] { width: 100%; accent-color: var(--brand); margin-top: 14px; }
+    .calc-result {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .result-card {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: rgba(255,255,255,.06);
+    }
+    .result-card .big { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 950; letter-spacing: -.07em; line-height: .95; }
+    .result-card .small { display: block; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+    .result-card.wide { grid-column: 1 / -1; }
+
+    .audiences {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .audience-card {
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.055);
+    }
+    .audience-card h3 { font-size: 1.22rem; margin-bottom: 9px; }
+    .audience-card p { color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+    .chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      display: inline-flex;
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: #d9efff;
+      background: rgba(255,255,255,.075);
+      border: 1px solid rgba(255,255,255,.1);
+      font-size: .82rem;
+      font-weight: 750;
+    }
+
+    .faq {
+      max-width: 880px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+    }
+    details {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      background: rgba(255,255,255,.055);
+      overflow: hidden;
+    }
+    summary {
+      cursor: pointer;
+      padding: 18px 20px;
+      font-weight: 850;
+      letter-spacing: -.02em;
+    }
+    details p { padding: 0 20px 20px; color: var(--muted); line-height: 1.55; margin: 0; }
+
+    .cta {
+      padding: 42px;
+      border: 1px solid rgba(84,224,255,.18);
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(84,224,255,.18), transparent 20rem),
+        radial-gradient(circle at 85% 70%, rgba(139,92,246,.18), transparent 18rem),
+        linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.045));
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+    .cta h2 { margin-bottom: 10px; }
+    .cta p { margin-bottom: 0; color: var(--muted); line-height: 1.55; max-width: 740px; }
+    footer {
+      padding: 34px 0 48px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: var(--muted-2);
+    }
+    .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 14px; }
+    .footer-links a:hover { color: var(--text); }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1020px) {
+      .hero-grid, .workflow, .security, .calculator, .cta { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 500px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 780px) {
+      .shell { width: min(100% - 28px, var(--max)); }
+      .nav { height: 68px; }
+      .menu-button {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255,255,255,.14);
+        border-radius: 999px;
+        background: rgba(255,255,255,.07);
+        color: var(--text);
+        align-items: center;
+        justify-content: center;
+      }
+      nav {
+        position: absolute;
+        top: 68px;
+        left: 14px;
+        right: 14px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 24px;
+        background: rgba(7,17,31,.95);
+        box-shadow: var(--shadow);
+        transform-origin: top;
+        transform: scaleY(0.92);
+        opacity: 0;
+        pointer-events: none;
+        transition: .18s ease;
+      }
+      nav.open { transform: scaleY(1); opacity: 1; pointer-events: auto; }
+      nav ul { display: grid; gap: 4px; padding: 10px; }
+      nav a { border-radius: 14px; padding: 13px; }
+      .nav-actions .btn-secondary { display: none; }
+      .hero { padding-top: 54px; }
+      .hero-trust, .problem-solution, .cards, .audiences, .calc-result { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 470px; }
+      .floating-card { position: relative; right: auto; bottom: auto; margin: 18px; width: auto; }
+      .diagram { position: relative; inset: auto; padding: 18px; }
+      .section { padding: 58px 0; }
+      .cta { padding: 26px; border-radius: 28px; }
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: clamp(2.75rem, 16vw, 4.2rem); }
+      .feature-grid { grid-template-columns: 1fr; }
+      .hero-actions .btn { width: 100%; }
+      .hero-visual { min-height: auto; }
+      .status-row { flex-direction: column; }
+      .card { min-height: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header>
+    <div class="shell nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="VeilStream home">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" role="img">
+            <path d="M5 11.6c3.6-5.1 8.1-7.2 13.4-6.2 3.8.7 6.7 2.9 8.6 6.2-2.4 3-5.5 4.5-9.2 4.5H14c-3.5 0-6.5 1.5-9 4.4 1.1-3.2 3.1-5.3 6.1-6.4 1.4-.5 3-.8 4.8-.8h2.4c1.6 0 2.9-.5 4-1.4-1.1-1-2.6-1.6-4.4-1.9-4.2-.7-7.8.8-10.8 4.6L5 11.6Z" fill="#06101F"/>
+            <path d="M5 20.4c2.4-3 5.5-4.5 9.2-4.5H18c3.5 0 6.5-1.5 9-4.4-1.1 3.2-3.1 5.3-6.1 6.4-1.4.5-3 .8-4.8.8h-2.4c-1.6 0-2.9.5-4 1.4 1.1 1 2.6 1.6 4.4 1.9 4.2.7 7.8-.8 10.8-4.6l2.1 3c-3.6 5.1-8.1 7.2-13.4 6.2-3.8-.7-6.7-2.9-8.6-6.2Z" fill="#06101F" opacity=".72"/>
+          </svg>
+        </span>
+        <span>VeilStream</span>
+      </a>
+
+      <button class="menu-button" id="menuButton" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <nav id="siteNav" aria-label="Site sections">
+        <ul>
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#workflow">Workflow</a></li>
+          <li><a href="#security">Safe Data</a></li>
+          <li><a href="#calculator">ROI</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-secondary" href="#faq">Learn more</a>
+        <a class="btn btn-primary" href="https://app.veilstream.com" target="_blank" rel="noopener">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="shell hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow"><span class="pulse" aria-hidden="true"></span> Environments-as-a-Service for Postgres apps</span>
+          <h1>Preview every change with realistic data, not crossed fingers.</h1>
+          <p class="lede">VeilStream gives software teams short-lived, shareable preview environments backed by safe, production-like Postgres seed data. Developers, reviewers, product managers, and AI coding agents can test real application behavior without creating a staging bottleneck or exposing sensitive data.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://app.veilstream.com" target="_blank" rel="noopener">Start a 30-day trial</a>
+            <a class="btn btn-secondary" href="#workflow">See how it works</a>
+          </div>
+          <div class="hero-trust" aria-label="VeilStream benefits">
+            <div class="trust-item"><strong>One-click previews</strong><span>Launch hosted environments from a GitHub workflow.</span></div>
+            <div class="trust-item"><strong>Sanitized seed data</strong><span>Keep schema and realism while masking sensitive fields.</span></div>
+            <div class="trust-item"><strong>AI-agent ready</strong><span>Give agents isolated places to build, test, and validate.</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="Illustration of VeilStream workflow">
+          <div class="diagram">
+            <div class="browser">
+              <div class="browser-top">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="urlbar">preview-42.veilstream.app · branch/add-checkout-flow</span>
+              </div>
+              <div class="browser-body">
+                <div class="pipeline">
+                  <div class="pipe-card">
+                    <h3>GitHub pull request opened</h3>
+                    <p>VeilStream detects the branch and starts a short-lived full-stack environment.</p>
+                  </div>
+                  <div class="pipe-card clean">
+                    <h3>Postgres seed file generated</h3>
+                    <p>Production-like data is filtered, obfuscated, and matched to your current schema.</p>
+                  </div>
+                  <div class="pipe-card">
+                    <h3>Secure preview URL shared</h3>
+                    <p>Developers, PMs, QA, designers, and agents can inspect the running app before merge.</p>
+                  </div>
+                </div>
+                <div class="status-row">
+                  <span class="status-pill"><span class="mini-dot"></span> Isolated</span>
+                  <span class="status-pill"><span class="mini-dot"></span> Auto-cleanup</span>
+                  <span class="status-pill"><span class="mini-dot"></span> Docker Compose</span>
+                </div>
+              </div>
+            </div>
+            <div class="floating-card" aria-label="Deployment metric">
+              <span class="label">Operational effect</span>
+              <div class="metric">Less staging drag</div>
+              <p>Fewer conflicts, fewer fake-data bugs, and less infrastructure maintenance for every review cycle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="problem">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">The staging problem</div>
+          <h2>Traditional staging was not designed for AI-era software delivery.</h2>
+          <p>Teams are shipping faster, reviewing more branches, and increasingly delegating implementation work to AI coding agents. A shared staging server and brittle test-data scripts create friction exactly when teams need safe parallelism.</p>
+        </div>
+
+        <div class="problem-solution">
+          <div class="panel reveal">
+            <div class="panel-header">
+              <span class="icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 4.4 2.9 17.2A2 2 0 0 0 4.6 20h14.8a2 2 0 0 0 1.7-2.8L13.7 4.4a2 2 0 0 0-3.4 0Z" stroke="#fb7185" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <h3>What slows teams down</h3>
+            </div>
+            <ul class="list">
+              <li><span class="badge-x">×</span><span>Pull requests collide because everyone is testing against the same shared staging environment.</span></li>
+              <li><span class="badge-x">×</span><span>Fake or stale seed data hides bugs that only appear with production-shaped records.</span></li>
+              <li><span class="badge-x">×</span><span>Security rules block production data from being copied into review environments.</span></li>
+              <li><span class="badge-x">×</span><span>Internal developer platform teams inherit Kubernetes, Helm, cleanup, access-control, and cost-management work.</span></li>
+            </ul>
+          </div>
+
+          <div class="panel reveal">
+            <div class="panel-header">
+              <span class="icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m20 6-11 11-5-5" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <h3>What VeilStream changes</h3>
+            </div>
+            <ul class="list">
+              <li><span class="badge-check">✓</span><span>Every branch can get its own hosted, isolated, short-lived preview environment.</span></li>
+              <li><span class="badge-check">✓</span><span>Seed files come from your own Postgres database, with sensitive data anonymized or filtered.</span></li>
+              <li><span class="badge-check">✓</span><span>Stakeholders get a live URL instead of screenshots, local demos, or vague status updates.</span></li>
+              <li><span class="badge-check">✓</span><span>Automatic teardown reduces staging clutter and keeps abandoned environments from becoming permanent infrastructure.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <div class="kicker">Core benefits</div>
+          <h2>Ship faster without lowering the safety bar.</h2>
+          <p>VeilStream is built for teams that want production-like confidence without giving every developer, reviewer, or AI agent direct access to sensitive production data.</p>
+        </div>
+        <div class="cards">
+          <article class="card reveal"><div class="num">01</div><h3>Parallel review by default</h3><p>Stop queuing work behind one fragile staging box. Multiple branches can be deployed, reviewed, and discarded independently.</p></article>
+          <article class="card reveal"><div class="num">02</div><h3>Representative data without the leak risk</h3><p>Use realistic seed data that preserves schema alignment while masking, filtering, or obfuscating sensitive fields.</p></article>
+          <article class="card reveal"><div class="num">03</div><h3>Visible progress for non-developers</h3><p>Product managers, designers, support teams, and executives can click into a running preview instead of waiting for a demo.</p></article>
+          <article class="card reveal"><div class="num">04</div><h3>Lower platform-maintenance load</h3><p>Hosted environments reduce the need to build a custom internal orchestration layer for every product team.</p></article>
+          <article class="card reveal"><div class="num">05</div><h3>Cleaner AI coding workflows</h3><p>Agents can work in isolated environments, run changes end-to-end, and avoid touching data they should not see.</p></article>
+          <article class="card reveal"><div class="num">06</div><h3>Less staging sprawl</h3><p>Short-lived deployments and automatic cleanup keep cost, confusion, and integration drift under control.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workflow">
+      <div class="shell workflow">
+        <div>
+          <div class="section-head reveal">
+            <div class="kicker">Workflow</div>
+            <h2>From branch to shareable preview in a practical developer flow.</h2>
+            <p>VeilStream works beside your existing tools. Connect a GitHub repository, configure deployment behavior, and seed each environment with safe Postgres data when realism matters.</p>
+          </div>
+          <div class="steps">
+            <div class="step reveal"><div class="step-number">1</div><div><h3>Connect your repository</h3><p>Authorize VeilStream with GitHub and point it at a repo that can boot through Docker Compose or your existing deployment pipeline.</p></div></div>
+            <div class="step reveal"><div class="step-number">2</div><div><h3>Define safe-data rules</h3><p>Choose which rows, columns, and values should be filtered, hidden, or obfuscated before seed data reaches a preview environment.</p></div></div>
+            <div class="step reveal"><div class="step-number">3</div><div><h3>Deploy on demand or automatically</h3><p>Launch previews manually, from CI/CD, from pull requests, or through agent-friendly automation patterns such as MCP.</p></div></div>
+            <div class="step reveal"><div class="step-number">4</div><div><h3>Share, test, review, and tear down</h3><p>Send stakeholders a secure URL. When the review is done, VeilStream cleans up the temporary environment.</p></div></div>
+          </div>
+        </div>
+
+        <div class="code-panel reveal" aria-label="Example deployment workflow">
+          <div class="code-title"><span>example-preview-flow.yml</span><span>single branch → live preview</span></div>
+          <pre><code><span class="token-comment"># Example concept: trigger a preview when a branch changes.</span>
+<span class="token-blue">on:</span>
+  <span class="token-purple">pull_request:</span>
+    <span class="token-blue">types:</span> [opened, synchronize, reopened]
+
+<span class="token-blue">jobs:</span>
+  <span class="token-purple">veilstream-preview:</span>
+    <span class="token-blue">runs-on:</span> ubuntu-latest
+    <span class="token-blue">steps:</span>
+      - <span class="token-blue">name:</span> Create isolated environment
+        <span class="token-blue">run:</span> veilstream deploy \
+          --repo "$GITHUB_REPOSITORY" \
+          --branch "$GITHUB_HEAD_REF" \
+          --compose docker-compose.yml
+
+      - <span class="token-blue">name:</span> Seed with sanitized Postgres data
+        <span class="token-blue">run:</span> veilstream seed \
+          --policy production-like-safe \
+          --target preview
+
+      - <span class="token-blue">name:</span> Add preview URL to pull request
+        <span class="token-blue">run:</span> veilstream comment-url
+
+<span class="token-comment"># Result: a live, short-lived preview app for review.</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <div class="kicker">Platform fit</div>
+          <h2>Designed to sit beside the systems you already use.</h2>
+          <p>VeilStream is not a demand to rebuild your platform. It is an environment layer for teams that want safer, faster preview workflows without committing to a heavy bespoke platform project.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="mini-feature reveal"><h3>GitHub workflows</h3><p>Launch previews from repo activity, pull requests, or manual developer action.</p></div>
+          <div class="mini-feature reveal"><h3>Docker Compose apps</h3><p>Bring full-stack applications online without hand-building every dependency.</p></div>
+          <div class="mini-feature reveal"><h3>Postgres-backed products</h3><p>Seed environments with data that mirrors real application behavior.</p></div>
+          <div class="mini-feature reveal"><h3>MCP-ready automation</h3><p>Let AI agents request environments as part of controlled development workflows.</p></div>
+          <div class="mini-feature reveal"><h3>Hosted by VeilStream</h3><p>Avoid standing up Kubernetes or connecting every team to your cloud account.</p></div>
+          <div class="mini-feature reveal"><h3>Automatic teardown</h3><p>Keep short-lived environments short-lived with cleanup built into the workflow.</p></div>
+          <div class="mini-feature reveal"><h3>Policy-based filters</h3><p>Control what data is visible by masking, hiding, or filtering sensitive fields.</p></div>
+          <div class="mini-feature reveal"><h3>Stakeholder URLs</h3><p>Make review concrete with a live link for product, design, QA, and leadership.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="security">
+      <div class="shell security">
+        <div class="shield reveal" aria-label="Security shield illustration">
+          <svg viewBox="0 0 420 420" width="100%" height="100%" role="img" aria-labelledby="shieldTitle shieldDesc">
+            <title id="shieldTitle">Safe seed data shield</title>
+            <desc id="shieldDesc">An abstract shield showing sensitive data being transformed before entering a preview environment.</desc>
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#54e0ff"/><stop offset="1" stop-color="#34d399"/></linearGradient>
+              <linearGradient id="g2" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#54e0ff"/></linearGradient>
+              <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path d="M210 42 335 92v96c0 84-49 152-125 190C134 340 85 272 85 188V92l125-50Z" fill="rgba(255,255,255,.055)" stroke="rgba(255,255,255,.2)" stroke-width="3"/>
+            <path d="M210 72 304 110v76c0 65-36 119-94 151-58-32-94-86-94-151v-76l94-38Z" fill="rgba(52,211,153,.08)" stroke="url(#g1)" stroke-width="4" filter="url(#glow)"/>
+            <g fill="none" stroke-linecap="round" stroke-width="8">
+              <path d="M120 155h80" stroke="#fb7185" opacity=".8"/>
+              <path d="M120 190h115" stroke="#fb7185" opacity=".62"/>
+              <path d="M120 225h70" stroke="#fb7185" opacity=".48"/>
+              <path d="M225 155h75" stroke="url(#g1)"/>
+              <path d="M260 190h40" stroke="url(#g1)"/>
+              <path d="M215 225h85" stroke="url(#g1)"/>
+            </g>
+            <path d="m172 281 30 30 62-78" stroke="url(#g2)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#glow)"/>
+          </svg>
+        </div>
+        <div class="security-copy">
+          <div class="section-head reveal" style="margin-bottom: 12px;">
+            <div class="kicker">Safe production-like data</div>
+            <h2>Realism and confidentiality should not be opposites.</h2>
+            <p>Testing against toy data creates a false sense of confidence. Testing against raw production data creates security and compliance problems. VeilStream’s Postgres data utility is designed for the middle ground: realistic seed data with sensitive information removed from the review workflow.</p>
+          </div>
+          <div class="callout reveal"><strong>Same schema, safer values</strong><span>Preview databases can remain structurally aligned with production while sensitive values are anonymized or filtered.</span></div>
+          <div class="callout reveal"><strong>Policy-controlled visibility</strong><span>Define controls around rows, columns, and user or agent access patterns rather than relying on fragile ad hoc scripts.</span></div>
+          <div class="callout reveal"><strong>Deployable proxy architecture</strong><span>Use hosted capabilities or deploy the lightweight proxy component where your architecture requires it.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="calculator">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <div class="kicker">ROI sketch</div>
+          <h2>Estimate the drag from staging friction.</h2>
+          <p>This simple calculator is not an accounting model. It helps expose how small delays across many pull requests can become a meaningful tax on engineering velocity.</p>
+        </div>
+        <div class="calculator reveal">
+          <div class="calc-controls">
+            <div class="control">
+              <label for="prs">Pull requests per month <output id="prsOut">80</output></label>
+              <input id="prs" type="range" min="10" max="400" value="80" step="10" />
+            </div>
+            <div class="control">
+              <label for="delay">Average staging delay per PR <output id="delayOut">1.5 hrs</output></label>
+              <input id="delay" type="range" min="0.25" max="8" value="1.5" step="0.25" />
+            </div>
+            <div class="control">
+              <label for="rate">Blended hourly cost <output id="rateOut">$125</output></label>
+              <input id="rate" type="range" min="50" max="300" value="125" step="25" />
+            </div>
+          </div>
+          <div class="calc-result" aria-live="polite">
+            <div class="result-card"><span class="big" id="hoursLost">120</span><span class="small">team hours lost each month to staging delay</span></div>
+            <div class="result-card"><span class="big" id="costLost">$15k</span><span class="small">estimated monthly cost of waiting and rework</span></div>
+            <div class="result-card wide"><span class="big" id="annualLost">$180k</span><span class="small">annualized opportunity cost before counting missed bugs, delayed feedback, and platform maintenance.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <div class="kicker">Who benefits</div>
+          <h2>A shared environment layer for the whole delivery loop.</h2>
+          <p>VeilStream is not only for developers. It improves the review surface for everyone responsible for moving software from branch to production safely.</p>
+        </div>
+        <div class="audiences">
+          <article class="audience-card reveal"><h3>Engineering leaders</h3><p>Reduce platform toil, unblock parallel delivery, and give teams a repeatable path for branch-level validation.</p><div class="chip-list"><span class="chip">Less bottlenecking</span><span class="chip">Lower toil</span><span class="chip">Cleaner reviews</span></div></article>
+          <article class="audience-card reveal"><h3>Developers and reviewers</h3><p>Open a URL, test the feature, inspect real application flows, and close the loop before merge.</p><div class="chip-list"><span class="chip">Live URLs</span><span class="chip">Realistic data</span><span class="chip">Fast feedback</span></div></article>
+          <article class="audience-card reveal"><h3>AI coding agents</h3><p>Give agents a bounded environment where they can deploy, run, and validate changes without broad database access.</p><div class="chip-list"><span class="chip">Isolated workspaces</span><span class="chip">MCP patterns</span><span class="chip">Safer autonomy</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="shell">
+        <div class="section-head center reveal">
+          <div class="kicker">FAQ</div>
+          <h2>Common questions before trying VeilStream.</h2>
+        </div>
+        <div class="faq">
+          <details class="reveal" open>
+            <summary>Is VeilStream replacing my CI/CD system?</summary>
+            <p>No. VeilStream is best understood as an environment layer that can work beside GitHub Actions, Jenkins, ArgoCD, and similar systems. It helps create hosted preview environments and safe seed data rather than forcing a wholesale platform rebuild.</p>
+          </details>
+          <details class="reveal">
+            <summary>Does VeilStream require direct production database access?</summary>
+            <p>VeilStream’s data workflow is designed around controlled access and sanitization. The goal is to generate production-like seed data for preview environments without exposing sensitive production values to developers, stakeholders, or agents.</p>
+          </details>
+          <details class="reveal">
+            <summary>What kinds of applications are the best fit?</summary>
+            <p>Postgres-backed full-stack applications are the clearest fit, especially teams that use GitHub, Docker Compose, and pull-request review workflows.</p>
+          </details>
+          <details class="reveal">
+            <summary>Why does this matter more with AI coding agents?</summary>
+            <p>AI coding agents increase the number of branches and experiments a team can produce. That makes shared staging bottlenecks, data-access policies, and review visibility more important, not less important.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell cta reveal">
+        <div>
+          <div class="kicker">Ready to remove staging drag?</div>
+          <h2>Give every branch a safe place to run.</h2>
+          <p>Start with a hosted preview environment, then add sanitized Postgres seed data where realism matters. No credit card required for the trial.</p>
+        </div>
+        <div class="hero-actions" style="margin: 0;">
+          <a class="btn btn-primary" href="https://app.veilstream.com" target="_blank" rel="noopener">Get started</a>
+          <a class="btn btn-secondary" href="mailto:hello@veilstream.com?subject=VeilStream%20demo%20request">Contact sales</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-row">
+      <div class="brand" aria-label="VeilStream footer">
+        <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M5 11.6c3.6-5.1 8.1-7.2 13.4-6.2 3.8.7 6.7 2.9 8.6 6.2-2.4 3-5.5 4.5-9.2 4.5H14c-3.5 0-6.5 1.5-9 4.4 1.1-3.2 3.1-5.3 6.1-6.4 1.4-.5 3-.8 4.8-.8h2.4c1.6 0 2.9-.5 4-1.4-1.1-1-2.6-1.6-4.4-1.9-4.2-.7-7.8.8-10.8 4.6L5 11.6Z" fill="#06101F"/><path d="M5 20.4c2.4-3 5.5-4.5 9.2-4.5H18c3.5 0 6.5-1.5 9-4.4-1.1 3.2-3.1 5.3-6.1 6.4-1.4.5-3 .8-4.8.8h-2.4c-1.6 0-2.9.5-4 1.4 1.1 1 2.6 1.6 4.4 1.9 4.2.7 7.8-.8 10.8-4.6l2.1 3c-3.6 5.1-8.1 7.2-13.4 6.2-3.8-.7-6.7-2.9-8.6-6.2Z" fill="#06101F" opacity=".72"/></svg></span>
+        <span>VeilStream</span>
+      </div>
+      <div class="footer-links">
+        <a href="#problem">Problem</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#security">Safe data</a>
+        <a href="#calculator">ROI</a>
+        <a href="https://www.veilstream.com" target="_blank" rel="noopener">veilstream.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const nav = document.getElementById('siteNav');
+      const button = document.getElementById('menuButton');
+      if (button && nav) {
+        button.addEventListener('click', function () {
+          const isOpen = nav.classList.toggle('open');
+          button.setAttribute('aria-expanded', String(isOpen));
+        });
+        nav.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            nav.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      const formatMoney = function (value) {
+        if (value >= 1000000) return '$' + (value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1) + 'M';
+        if (value >= 1000) return '$' + Math.round(value / 1000) + 'k';
+        return '$' + Math.round(value).toLocaleString();
+      };
+
+      const prs = document.getElementById('prs');
+      const delay = document.getElementById('delay');
+      const rate = document.getElementById('rate');
+      const prsOut = document.getElementById('prsOut');
+      const delayOut = document.getElementById('delayOut');
+      const rateOut = document.getElementById('rateOut');
+      const hoursLost = document.getElementById('hoursLost');
+      const costLost = document.getElementById('costLost');
+      const annualLost = document.getElementById('annualLost');
+
+      function updateCalculator() {
+        const prCount = Number(prs.value);
+        const delayHours = Number(delay.value);
+        const hourlyRate = Number(rate.value);
+        const monthlyHours = prCount * delayHours;
+        const monthlyCost = monthlyHours * hourlyRate;
+        prsOut.textContent = prCount.toLocaleString();
+        delayOut.textContent = delayHours.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' hrs';
+        rateOut.textContent = '$' + hourlyRate.toLocaleString();
+        hoursLost.textContent = Math.round(monthlyHours).toLocaleString();
+        costLost.textContent = formatMoney(monthlyCost);
+        annualLost.textContent = formatMoney(monthlyCost * 12);
+      }
+      [prs, delay, rate].forEach(function (input) { if (input) input.addEventListener('input', updateCalculator); });
+      updateCalculator();
+
+      const reveals = Array.from(document.querySelectorAll('.reveal'));
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        reveals.forEach(function (el) { observer.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('visible'); });
+      }
+    })();
+  </script>
+</body>
+</html>
